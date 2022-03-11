@@ -19,6 +19,6 @@ node{
         sshagent(['dev-server']) {
           sh "ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-89-81-162.compute-1.amazonaws.com ${dockerRun}"
         }
-	  echo 'Deployed into the server
+	  echo 'Deployed into the server'
    }
 }
