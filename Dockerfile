@@ -1,13 +1,9 @@
-# Start with a base image containing Java runtime
-FROM openjdk:17-alpine
+FROM maven:3.8.4-openjdk-8 AS build
+COPY src /home/app/src
+COPY pom.xml /home/app
+RUN mvn -f /home/app/pom.xml clean package
 
-# The application's jar file
-ARG JAR_FILE=target/HelloWorld-0.0.1-SNAPSHOT.jar
-
-# Add the application's jar to the container
-ADD ${JAR_FILE} HelloWorld-0.0.1-SNAPSHOT.jar
-
-# Add the application's ENTRY POINT FILE
-ADD ${ENTRY_POINT_FILE} entry_point.sh
-
-ENTRYPOINT ["sh", "./entry_point.sh"]
+FROM openjdk:8-alpine
+COPY --from=build /home/app/target/HelloWorld-0.0.1-SNAPSHOT.jar /usr/local/lib/HelloWorld-0.0.1-SNAPSHOT.jar
+EXPOSE 8081
+ENTRYPOINT ["java","-jar","/usr/local/lib/HelloWorld-0.0.1-SNAPSHOT.jar"]
